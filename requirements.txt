@@ -1,0 +1,2 @@
+cytoolz==0.7.1
+python-chess==0.7.0
