@@ -5,13 +5,13 @@ from cytoolz import partial
 ## Global definition of infinity.
 inf = float('inf')
 
-def adversarial_search(prune=False, horizon=3, value):
+def adversarial_search(value, prune=False, horizon=3):
     if prune:
-        return (partial(min_value_prune, horizon, value),
-                partial(max_value_prune, horizon, value))
+        return (partial(value, min_value_prune, horizon),
+                partial(value, max_value_prune, horizon))
     else:
-        return (partial(min_value, horizon, value),
-                partial(max_value, horizon, value))
+        return (partial(value, min_value, horizon),
+                partial(value, max_value, horizon))
 
 
 def min_value(horizon, value, state):
@@ -73,7 +73,7 @@ def max_value(horizon, value, state):
     v = -inf
     for a in actions(state):
         next_state = a(state)
-        v = min(v, min_value(horizon - 1, value, next_state)
+        v = min(v, min_value(horizon - 1, value, next_state))
 
     return v
 
