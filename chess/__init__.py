@@ -2393,7 +2393,7 @@ class Bitboard(object):
             if piece:
                 builder.append(piece.screen_symbol())
             else:
-                builder.append(".")
+                colored(builder.append("."), 'grey', attrs=['dark'])
 
             if BB_SQUARES[square] & BB_FILE_H:
                 if square != H1:
