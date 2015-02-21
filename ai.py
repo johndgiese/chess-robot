@@ -1,10 +1,11 @@
 ## Authors: Daniel Hensley and Ryan Orendorff
 
-from cytoolz import partial
+from itertools import cycle
+
+from toolz import partial, take
 
 ## Global definition of infinity.
 inf = float('inf')
-
 
 def generate(possible_actions, weight_function):
     def best_move(board):
@@ -17,6 +18,7 @@ def generate(possible_actions, weight_function):
 
 
 def adversarial_search(value, prune=False, horizon=3):
+    queue = take(horizon, cycle([max, min]))
     if prune:
         return (partial(value, min_value_prune, horizon),
                 partial(value, max_value_prune, horizon))
