@@ -1,19 +1,19 @@
 ## Authors: Daniel Hensley and Ryan Orendorff
 
 from itertools import cycle
+import random
 
 from toolz import partial, take
+
 
 ## Global definition of infinity.
 inf = float('inf')
 
+
 def generate(possible_actions, weight_function):
     def best_move(board):
         weight = weight_function(board)
-        for action, new_board in possible_actions(board):
-            new_weight = weight_function(new_board)
-            if new_weight >= weight:
-                return action
+        return random.choice([a for a, nb in possible_actions(board)])
     return best_move
 
 
