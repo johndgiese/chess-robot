@@ -5,6 +5,17 @@ from cytoolz import partial
 ## Global definition of infinity.
 inf = float('inf')
 
+
+def generate(possible_actions, weight_function):
+    def best_move(board):
+        weight = weight_function(board)
+        for action, new_board in possible_actions(board):
+            new_weight = weight_function(new_board)
+            if new_weight >= weight:
+                return action
+    return best_move
+
+
 def adversarial_search(value, prune=False, horizon=3):
     if prune:
         return (partial(value, min_value_prune, horizon),
