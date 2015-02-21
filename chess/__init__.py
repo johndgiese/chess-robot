@@ -25,6 +25,8 @@ __version__ = "0.7.0"
 import collections
 import re
 
+from termcolor import colored
+
 
 COLORS = [ WHITE, BLACK ] = range(2)
 
@@ -657,6 +659,12 @@ class Piece(object):
             return PIECE_SYMBOLS[self.piece_type].upper()
         else:
             return PIECE_SYMBOLS[self.piece_type]
+
+    def screen_symbol(self):
+        if self.color == WHITE:
+            return PIECE_SYMBOLS[self.piece_type].upper()
+        else:
+            return colored(PIECE_SYMBOLS[self.piece_type].upper(), 'red')
 
     def __hash__(self):
         return self.piece_type * (self.color + 1)
@@ -2383,7 +2391,7 @@ class Bitboard(object):
             piece = self.piece_at(square)
 
             if piece:
-                builder.append(piece.symbol())
+                builder.append(piece.screen_symbol())
             else:
                 builder.append(".")
 
