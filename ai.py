@@ -133,3 +133,22 @@ def max_value(h, value, step, actions, s):
 
     return reduce(lambda m, a: max(m, cofn(step(s, a))),
             actions(s), Move(None, -inf))
+
+
+
+if __name__ == '__main__':
+
+    from random import randint
+
+    step = lambda s, a: s
+    actions = lambda s: ['left', 'right']
+
+    def value(s):
+
+        r = randint(1, 100)
+        print(r)
+
+        return r
+
+    ai = adversarial_search(value, actions, step, 3)
+    print(ai(None))
