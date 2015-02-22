@@ -8,9 +8,9 @@ def handle_checkmate(func):
     def decorated(board):
         if board.is_checkmate():
             if util.white_wins(board):
-                return float('inf')
+                return 10000000.0
             else:
-                return -float('inf')
+                return -10000000.0
         else:
             return func(board)
     return decorated
