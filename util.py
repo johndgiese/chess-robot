@@ -71,4 +71,5 @@ def update_progress(progress):
 def generate_move_function(weight_func, steps_ahead):
     return adversarial_search(weight_func, possible_actions, step, steps_ahead)
 
-
+def attacker_imbalance(board, square):
+    return len(board.attackers(chess.WHITE, square)) - len(board.attackers(chess.BLACK, square))

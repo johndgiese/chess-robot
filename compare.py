@@ -1,12 +1,12 @@
 import sys
 
-from weight import piece_value_weight, random_weight
+from weight import weight
 import util
 
 
 if __name__ == "__main__":
-    white = util.generate_move_function(piece_value_weight, 2)
-    black = util.generate_move_function(piece_value_weight, 1)
+    white = util.generate_move_function(weight, 2)
+    black = util.generate_move_function(weight, 1)
 
 
 

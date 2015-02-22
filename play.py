@@ -1,8 +1,9 @@
-from weight import piece_value_weight
+from weight import weight, random_weight
 from util import play_game, possible_actions, generate_move_function
 
 
 if __name__ == "__main__":
-    best_move = generate_move_function(piece_value_weight, 3)
-    play_game(best_move, best_move, display=True)
+    white = generate_move_function(weight, 3)
+    black = generate_move_function(random_weight, 3)
+    play_game(white, black, display=True)
 
