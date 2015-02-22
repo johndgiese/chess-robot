@@ -108,11 +108,10 @@ def min_value(h, value, step, actions, s):
     if h is 1:
         return min(Move(a, value(step(s, a))) for a in actions(s))
 
-
     ## Convience function, takes in a state and calls max_value.
     cofn = lambda s: max_value(h - 1, value, step, actions, s)
 
-    return reduce(lambda m, a: min(m, cofn(step(s, a))),
+    return reduce(lambda m, a: min(m, Move(a, cofn(step(s, a)).value)),
             actions(s), Move(None, inf))
 
 
@@ -142,13 +141,11 @@ def max_value(h, value, step, actions, s):
     if h is 1:
         return max(Move(a, value(step(s, a))) for a in actions(s))
 
-
     ## Convience function, takes in a state and calls min_value.
     cofn = lambda s: min_value(h - 1, value, step, actions, s)
 
-    return reduce(lambda m, a: max(m, cofn(step(s, a))),
+    return reduce(lambda m, a: max(m, Move(a, cofn(step(s, a)).value)),
             actions(s), Move(None, -inf))
-
 
 
 if __name__ == '__main__':
