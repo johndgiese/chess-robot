@@ -1,3 +1,5 @@
+from itertools import cycle
+
 import chess
 from weight import piece_value_weight
 
@@ -17,13 +19,20 @@ def possible_actions(board):
         yield a, new_board
 
 
-def play_game(best_move, display=False):
+def play_game(white_move_func, black_move_func, display=False):
     b = chess.Bitboard()
     if display:
         print(str(b) + '\n\n')
 
+    whites_turn = True
     while not b.is_game_over():
-        m = best_move(b)
+        if whites_turn:
+            m = white_move_func(b)
+        else:
+            m = black_move_func(b)
+        whites_turn = not whites_turn
+
+        
         b.push(m)
 
         if display:
@@ -41,3 +50,16 @@ def play_game(best_move, display=False):
             print("5-FOLD REPITITION")
         elif b.is_checkmate():
             print("CHECKMATE")
+
+    return b
+
+def whites_turn(board):
+    return board.turn == chess.WHITE
+
+
+def white_wins(board):
+    return board.is_checkmate() and whites_turn(board)
+
+
+def update_progress(progress):
+    print('\r{0}%'.format(progress))
