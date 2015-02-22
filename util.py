@@ -1,4 +1,5 @@
 import chess
+from weight import piece_value_weight
 
 
 def num_kings(board):
@@ -22,16 +23,12 @@ def play_game(best_move, display=False):
         print(str(b) + '\n\n')
 
     while not b.is_game_over():
-        if num_kings(b) != 2:
-            error = BoardException("Incorrect number of kings!")
-            error.board = b
-            raise error
-
         m = best_move(b)
         b.push(m)
 
         if display:
             print(str(b) + '\n\n')
+            print(piece_value_weight(b))
 
 
     if display:
