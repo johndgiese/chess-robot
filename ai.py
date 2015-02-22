@@ -18,14 +18,10 @@ def generate(possible_actions, weight_function):
     return best_move
 
 
-def adversarial_search(value, prune=False, horizon=3):
+def adversarial_search(value, step, horizon=3):
 
-    if prune:
-        return (partial(value, min_value_prune, horizon),
-                partial(value, max_value_prune, horizon))
-    else:
-        return (partial(value, min_value, horizon),
-                partial(value, max_value, horizon))
+    return (partial(value, min_value, step, horizon),
+            partial(value, max_value, step, horizon))
 
 
 class Move(object):
@@ -74,7 +70,7 @@ class Move(object):
         return Move(self._action, self._value)
 
 
-def min_value(h, value, s):
+def min_value(h, value, step, s):
     ''' Find next with minimum value function.
 
     Parameters
@@ -100,13 +96,13 @@ def min_value(h, value, s):
         return min(Move(a, value(step(s, a))) for a in actions(s))
 
     ## Convience function, takes in a state and calls max_value.
-    cofn = lambda s: max_value(h - 1, value, s)
+    cofn = lambda s: max_value(h - 1, value, step, s)
 
     return reduce(lambda m, a: min(m, cofn(step(s, a))),
             actions(state), Move(None, inf))
 
 
-def max_value(h, value, s):
+def max_value(h, value, step, s):
     ''' Find next with minimum value function.
 
     Parameters
@@ -132,7 +128,7 @@ def max_value(h, value, s):
         return max(Move(a, value(step(s, a))) for a in actions(s))
 
     ## Convience function, takes in a state and calls min_value.
-    cofn = lambda s: min_value(h - 1, value, s)
+    cofn = lambda s: min_value(h - 1, value, step, s)
 
     return reduce(lambda m, a: max(m, cofn(step(s, a))),
             actions(state), Move(None, -inf))
