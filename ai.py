@@ -1,12 +1,8 @@
 ## Authors: Daniel Hensley and Ryan Orendorff
-
-from itertools import cycle
 from functools import reduce
-import random
 
 ## Global definition of infinity.
 inf = float('inf')
-
 
 class Move(object):
     ''' A pair containing the action and its associated value.
