@@ -6,6 +6,12 @@ import chess
 from ai import adversarial_search
 
 
+def white_minus_black(func):
+    def decorated(*args, **kwargs):
+        return func(chess.WHITE, *args, **kwargs) - func(chess.BLACK, *args, **kwargs)
+    return decorated
+
+
 def num_kings(board):
     return len([True for p in board.pieces if p == chess.KING])
 
@@ -40,13 +46,12 @@ def play_game(white_move_func, black_move_func, display=False):
         else:
             m = black_move_func(b)
         whites_turn = not whites_turn
-        print(m)
         
         b.push(m)
 
         if display:
+            print(m)
             print(str(b) + '\n\n')
-
 
     if display:
         if b.is_stalemate():
@@ -62,6 +67,7 @@ def play_game(white_move_func, black_move_func, display=False):
 
     return b
 
+
 def whites_turn(board):
     return board.turn == chess.WHITE
 
@@ -70,25 +76,21 @@ def white_wins(board):
     return board.is_checkmate() and whites_turn(board)
 
 
-def update_progress(progress):
-    print('\r{0}%'.format(progress))
-
-
 def generate_move_function(is_white, weight_func, steps_ahead):
     if is_white:
         weight = weight_func
     else:
         weight = lambda b: -weight_func(b)
+
     return adversarial_search(weight, possible_actions, step, steps_ahead)
 
-def attacker_imbalance(board, square):
-    return white_attackers(board, square) - black_attackers(board, square)
 
-def white_attackers(board, square):
-    return len(board.attackers(chess.WHITE, square))
+def attackers(color, board, square):
+    return len(board.attackers(color, square))
 
-def black_attackers(board, square):
-    return len(board.attackers(chess.BLACK, square))
+
+attacker_imbalance = white_minus_black(attackers)
+
 
 def adjacent_squares(square):
     return filter(lambda x: 0 <= x < 64, [
@@ -107,4 +109,14 @@ def adjacent_squares(square):
 
 def sum_list(summands):
     return reduce(lambda x, y: x + y, summands)
+
+
+def get_piece_squares(board):
+    for s in chess.SQUARES:
+        p = board.piece_at(s)
+        if not p is None:
+            yield p, s
+
+def get_pieces(board):
+    return filter(lambda x: not x is None, [board.piece_at(s) for s in chess.SQUARES])
 

@@ -15,7 +15,7 @@ if __name__ == "__main__":
     total_games = int(sys.argv[1])
     for x in range(total_games):
         print("\r{} Ties, {} White, {} Black".format(ties, white_wins, black_wins))
-        b = util.play_game(white, black, display=True)
+        b = util.play_game(white, black, display=False)
         if b.is_checkmate():
             if util.white_wins(b):
                 white_wins += 1
