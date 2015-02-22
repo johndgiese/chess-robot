@@ -77,12 +77,14 @@ def min_value(h, value, step, actions, s):
     object
         The optimal action to be taken.
     '''
-    if h is 1:
-        return min(Move(a, value(step(s, a))) for a in actions(s))
 
     ## If we cannot make any moves, then return no move with the score.
     if len(actions(s)) is 0:
-        return Move(None, value(state))
+        return Move(None, value(s))
+
+    if h is 1:
+        return min(Move(a, value(step(s, a))) for a in actions(s))
+
 
     ## Convience function, takes in a state and calls max_value.
     cofn = lambda s: max_value(h - 1, value, step, actions, s)
@@ -109,12 +111,14 @@ def max_value(h, value, step, actions, s):
     object
         The optimal action to be taken.
     '''
-    if h is 1:
-        return max(Move(a, value(step(s, a))) for a in actions(s))
 
     ## If we cannot make any moves, then return no move with the score.
     if len(actions(s)) is 0:
-        return Move(None, value(state))
+        return Move(None, value(s))
+
+    if h is 1:
+        return max(Move(a, value(step(s, a))) for a in actions(s))
+
 
     ## Convience function, takes in a state and calls min_value.
     cofn = lambda s: min_value(h - 1, value, step, actions, s)
