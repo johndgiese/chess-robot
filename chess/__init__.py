@@ -2438,6 +2438,7 @@ class Bitboard(object):
             return True
 
         return False
+    
 
     def zobrist_hash(self, array=None):
         """
@@ -2508,6 +2509,10 @@ class Bitboard(object):
             square = bit_scan(squares, square + 1)
 
         return zobrist_hash
+
+    def __hash__(self):
+        return self.zobrist_hash()
+
 
 
 class PseudoLegalMoveGenerator(object):

@@ -14,7 +14,6 @@ class BoardException(Exception):
 
 def possible_actions(board):
     actions = list(board.legal_moves)
-    print(len(actions))
     return actions
 
 def step(board, move):
@@ -34,9 +33,8 @@ def play_game(white_move_func, black_move_func, display=False):
             m = white_move_func(b)
         else:
             m = black_move_func(b)
-        print(m)
         whites_turn = not whites_turn
-
+        print(m)
         
         b.push(m)
 

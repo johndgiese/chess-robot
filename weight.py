@@ -1,3 +1,4 @@
+from functools import lru_cache
 import random
 import chess
 import util
@@ -32,6 +33,7 @@ PIECE_WEIGHTS = {
 }
 
 
+@lru_cache(maxsize=1000)
 @handle_checkmate
 def piece_value_weight(board):
     score = 0
