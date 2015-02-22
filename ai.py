@@ -14,7 +14,6 @@ class Move(object):
     The important component of this class is that it can be compared, and
     hence passed to functions like min, max, etc.
     '''
-
     def __init__(self, action, value):
         self._action = action
         self._value = value
@@ -54,13 +53,6 @@ class Move(object):
         return Move(self._action, self._value)
 
 
-def generate(possible_actions, weight_function):
-    def best_move(board):
-        weight = weight_function(board)
-        return random.choice([a for a, nb in possible_actions(board)])
-    return best_move
-
-
 def adversarial_search(value, actions, step, horizon=3):
 
     def ai(state):
@@ -88,13 +80,13 @@ def min_value(h, value, step, actions, s):
     -------
     object
         The optimal action to be taken.
-
-    Examples
-    --------
-        TODO: fill in.
     '''
     if h is 1:
         return min(Move(a, value(step(s, a))) for a in actions(s))
+
+    ## If we cannot make any moves, then return no move with the score.
+    if len(actions(s)) is 0:
+        return Move(None, value(state))
 
     ## Convience function, takes in a state and calls max_value.
     cofn = lambda s: max_value(h - 1, value, step, actions, s)
@@ -120,13 +112,13 @@ def max_value(h, value, step, actions, s):
     -------
     object
         The optimal action to be taken.
-
-    Examples
-    --------
-        TODO: fill in.
     '''
     if h is 1:
         return max(Move(a, value(step(s, a))) for a in actions(s))
+
+    ## If we cannot make any moves, then return no move with the score.
+    if len(actions(s)) is 0:
+        return Move(None, value(state))
 
     ## Convience function, takes in a state and calls min_value.
     cofn = lambda s: min_value(h - 1, value, step, actions, s)
