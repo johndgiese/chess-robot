@@ -1,6 +1,7 @@
 ## Authors: Daniel Hensley and Ryan Orendorff
 
 from itertools import cycle
+from functools import reduce
 import random
 
 from toolz import partial, take, tail
