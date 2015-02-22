@@ -1,3 +1,4 @@
+from functools import reduce
 from itertools import cycle
 import random
 
@@ -77,4 +78,29 @@ def generate_move_function(weight_func, steps_ahead):
     return adversarial_search(weight_func, possible_actions, step, steps_ahead)
 
 def attacker_imbalance(board, square):
-    return len(board.attackers(chess.WHITE, square)) - len(board.attackers(chess.BLACK, square))
+    return white_attackers(board, square) - black_attackers(board, square)
+
+def white_attackers(board, square):
+    return len(board.attackers(chess.WHITE, square))
+
+def black_attackers(board, square):
+    return len(board.attackers(chess.BLACK, square))
+
+def adjacent_squares(square):
+    return filter(lambda x: 0 <= x < 64, [
+        square - 1,
+        square + 1,
+
+        square - 9,
+        square - 8,
+        square - 7,
+
+        square + 9,
+        square + 8,
+        square + 7,
+    ])
+
+
+def sum_list(summands):
+    return reduce(lambda x, y: x + y, summands)
+
