@@ -50,7 +50,7 @@ def play_game(white_move_func, black_move_func, display=False):
         b.push(m)
 
         if display:
-            print(m)
+            print('\n' + str(m))
             print(str(b) + '\n\n')
 
     if display:
@@ -92,8 +92,12 @@ def attackers(color, board, square):
 attacker_imbalance = white_minus_black(attackers)
 
 
+def on_board(squares):
+    return filter(lambda x: 0 <= x < 64, squares)
+
+
 def adjacent_squares(square):
-    return filter(lambda x: 0 <= x < 64, [
+    return on_board([
         square - 1,
         square + 1,
 
@@ -108,7 +112,7 @@ def adjacent_squares(square):
 
 
 def sum_list(summands):
-    return reduce(lambda x, y: x + y, summands)
+    return reduce(lambda x, y: x + y, summands, 0)
 
 
 def get_piece_squares(board):

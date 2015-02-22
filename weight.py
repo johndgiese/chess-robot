@@ -26,11 +26,15 @@ def random_weight(board):
 @handle_checkmate
 def weight(board):
     pv = piece_value_weight(board)
-    cc = control_center_weight(board)
-    cw = check_weight(board)
-    akw = attack_king_weight(board)
-    aqw = attack_queen_weight(board)
-    return pv + cc/10 + cw + akw/8 + aqw/10
+    cc = control_center_weight(board)/10
+    ic = check_weight(board)
+    ak = attack_king_weight(board)/8
+    aq = attack_queen_weight(board)/20
+    ps = pawn_structure_weight(board)
+
+    print("pv {:0>+2.2f}, cc {:0>+2.2f} ic {:0>+2.2f} ak {:0>+2.2f} aq {:0>+2.2f} ps {:0>+2.2f}".format(pv, cc, ic, ak, aq, ps), end="\r")
+
+    return pv + cc + ic + ak + aq + ps
 
 
 
