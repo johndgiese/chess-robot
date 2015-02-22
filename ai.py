@@ -76,13 +76,13 @@ def adversarial_search(value, actions, step, horizon=3):
     '''
     def ai(state):
 
-        ret = max_value(horizon, value, step, actions, state)
+        ret = max_value(horizon, value, step, actions, -inf, inf, state)
         return ret.action
 
     return ai
 
 
-def min_value(h, value, step, actions, s):
+def min_value(h, value, step, actions, alpha, beta, s):
     ''' Find next with minimum value function.
 
     Parameters
@@ -108,14 +108,18 @@ def min_value(h, value, step, actions, s):
     if h is 1:
         return min(Move(a, value(step(s, a))) for a in actions(s))
 
-    ## Convience function, takes in a state and calls max_value.
-    cofn = lambda s: max_value(h - 1, value, step, actions, s)
+    ## Convenience function, takes in a state and calls max_value.
+    cofn = lambda s: max_value(h - 1, value, step, actions, alpha, beta, s)
 
-    return reduce(lambda m, a: min(m, Move(a, cofn(step(s, a)).value)),
-            actions(s), Move(None, inf))
+    m = Move(None, inf)
+    for a in actions(s):
+        m = min(m, Move(a, cofn(step(s, a)).value))
+        if m.value <= alpha: return m
+        beta = min(beta, m.value)
+    return m
 
 
-def max_value(h, value, step, actions, s):
+def max_value(h, value, step, actions, alpha, beta, s):
     ''' Find next with minimum value function.
 
     Parameters
@@ -141,11 +145,15 @@ def max_value(h, value, step, actions, s):
     if h is 1:
         return max(Move(a, value(step(s, a))) for a in actions(s))
 
-    ## Convience function, takes in a state and calls min_value.
-    cofn = lambda s: min_value(h - 1, value, step, actions, s)
+    ## Convenience function, takes in a state and calls min_value.
+    cofn = lambda s: min_value(h - 1, value, step, actions, alpha, beta, s)
 
-    return reduce(lambda m, a: max(m, Move(a, cofn(step(s, a)).value)),
-            actions(s), Move(None, -inf))
+    m = Move(None, -inf)
+    for a in actions(s):
+        m = max(m, Move(a, cofn(step(s, a)).value))
+        if m.value >= beta: return m
+        alpha = max(alpha, m.value)
+    return m
 
 
 if __name__ == '__main__':
