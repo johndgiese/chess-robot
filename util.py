@@ -97,18 +97,22 @@ def on_board(squares):
 
 
 def adjacent_squares(square):
-    return on_board([
-        square - 1,
-        square + 1,
 
-        square - 9,
+    adjs = [
         square - 8,
-        square - 7,
-
-        square + 9,
         square + 8,
-        square + 7,
-    ])
+    ]
+
+    if chess.file_index(square) != 0:
+        adjs.append(square - 9)
+        adjs.append(square - 1)
+        adjs.append(square + 7)
+    if chess.file_index(square) != 7:
+        adjs.append(square - 7)
+        adjs.append(square + 1)
+        adjs.append(square + 9)
+
+    return on_board(adjs)
 
 
 def sum_list(summands):
