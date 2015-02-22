@@ -4,24 +4,8 @@ from itertools import cycle
 from functools import reduce
 import random
 
-from toolz import partial, take, tail
-
-
 ## Global definition of infinity.
 inf = float('inf')
-
-
-def generate(possible_actions, weight_function):
-    def best_move(board):
-        weight = weight_function(board)
-        return random.choice([a for a, nb in possible_actions(board)])
-    return best_move
-
-
-def adversarial_search(value, step, horizon=3):
-
-    return (partial(value, min_value, step, horizon),
-            partial(value, max_value, step, horizon))
 
 
 class Move(object):
@@ -70,7 +54,24 @@ class Move(object):
         return Move(self._action, self._value)
 
 
-def min_value(h, value, step, s):
+def generate(possible_actions, weight_function):
+    def best_move(board):
+        weight = weight_function(board)
+        return random.choice([a for a, nb in possible_actions(board)])
+    return best_move
+
+
+def adversarial_search(value, actions, step, horizon=3):
+
+    def ai(state):
+
+        ret = max_value(horizon, value, step, actions, state)
+        return ret.action
+
+    return ai
+
+
+def min_value(h, value, step, actions, s):
     ''' Find next with minimum value function.
 
     Parameters
@@ -96,13 +97,13 @@ def min_value(h, value, step, s):
         return min(Move(a, value(step(s, a))) for a in actions(s))
 
     ## Convience function, takes in a state and calls max_value.
-    cofn = lambda s: max_value(h - 1, value, step, s)
+    cofn = lambda s: max_value(h - 1, value, step, actions, s)
 
     return reduce(lambda m, a: min(m, cofn(step(s, a))),
-            actions(state), Move(None, inf))
+            actions(s), Move(None, inf))
 
 
-def max_value(h, value, step, s):
+def max_value(h, value, step, actions, s):
     ''' Find next with minimum value function.
 
     Parameters
@@ -128,7 +129,7 @@ def max_value(h, value, step, s):
         return max(Move(a, value(step(s, a))) for a in actions(s))
 
     ## Convience function, takes in a state and calls min_value.
-    cofn = lambda s: min_value(h - 1, value, step, s)
+    cofn = lambda s: min_value(h - 1, value, step, actions, s)
 
     return reduce(lambda m, a: max(m, cofn(step(s, a))),
-            actions(state), Move(None, -inf))
+            actions(s), Move(None, -inf))
