@@ -50,7 +50,30 @@ class Move(object):
 
 
 def adversarial_search(value, actions, step, horizon=3):
+    '''An AI function that, given the current state, suggests an action.
 
+    Parameters
+    ----------
+    value : function of type state -> number
+        The value of a current state to the player calling this AI
+        function. For example, in the game of chess, this should be the
+        how well a certain board layout is to the calling player.
+    actions : function of type state -> [action]
+        Given the current state, the function actions should return a
+        list of possible actions that a player can take. If no action is
+        possible this function should return an empty list.
+    step : function of type state -> action -> state
+        Given the current state and an action to take, the step function
+        should return the new state after the action is taken.
+    horizon : int
+        The number of moves to look ahead, including moves made by an
+        adversary.
+
+    Returns
+    -------
+    type(action) or None
+        The suggestion action to take, or None if no action can be taken.
+    '''
     def ai(state):
 
         ret = max_value(horizon, value, step, actions, state)
