@@ -5,10 +5,8 @@ import util
 
 
 if __name__ == "__main__":
-    white = util.generate_move_function(weight, 2)
-    black = util.generate_move_function(weight, 1)
-
-
+    white = util.generate_move_function(True, weight, 2)
+    black = util.generate_move_function(False, weight, 1)
 
     white_wins = 0
     black_wins = 0

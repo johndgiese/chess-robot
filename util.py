@@ -74,8 +74,12 @@ def update_progress(progress):
     print('\r{0}%'.format(progress))
 
 
-def generate_move_function(weight_func, steps_ahead):
-    return adversarial_search(weight_func, possible_actions, step, steps_ahead)
+def generate_move_function(is_white, weight_func, steps_ahead):
+    if is_white:
+        weight = weight_func
+    else:
+        weight = lambda b: -weight_func(b)
+    return adversarial_search(weight, possible_actions, step, steps_ahead)
 
 def attacker_imbalance(board, square):
     return white_attackers(board, square) - black_attackers(board, square)
