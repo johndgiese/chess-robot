@@ -1,4 +1,5 @@
 from itertools import cycle
+import random
 
 import chess
 from ai import adversarial_search
@@ -13,8 +14,7 @@ class BoardException(Exception):
 
 
 def possible_actions(board):
-    actions = list(board.legal_moves)
-    return actions
+    return random.shuffle(list(board.legal_moves))
 
 def step(board, move):
     new_board = chess.Bitboard(board.fen())
