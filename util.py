@@ -28,7 +28,6 @@ def play_game(best_move, display=False):
 
         if display:
             print(str(b) + '\n\n')
-            print(piece_value_weight(b))
 
 
     if display:
