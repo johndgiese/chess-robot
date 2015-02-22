@@ -92,7 +92,17 @@ def min_value(h, value, step, actions, alpha, beta, s):
         value function.
     value: function
         Function that returns the value of a (game) state.
-    state: object
+    step: function
+        Function that yields the new state after applying an action/move
+        to a given state.
+    actions: function
+        Function that returns the possible actions/moves for a given
+        board state.
+    alpha: float
+        Alpha parameter for alpha-beta pruning.
+    beta: float
+        Beta parameter for alpha-beta pruning.
+    s: object
         Object describing (game) state.
 
     Returns
@@ -133,7 +143,17 @@ def max_value(h, value, step, actions, alpha, beta, s):
         value function.
     value: function
         Function that returns the value of a (game) state.
-    state: object
+    step: function
+        Function that yields the new state after applying an action/move
+        to a given state.
+    actions: function
+        Function that returns the possible actions/moves for a given
+        board state.
+    alpha: float
+        Alpha parameter for alpha-beta pruning.
+    beta: float
+        Beta parameter for alpha-beta pruning.
+    s: object
         Object describing (game) state.
 
     Returns
