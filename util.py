@@ -14,7 +14,12 @@ class BoardException(Exception):
 
 
 def possible_actions(board):
-    return random.shuffle(list(board.legal_moves))
+    if board.is_game_over():
+        return []
+    else:
+        actions = list(board.legal_moves)
+        random.shuffle(actions)
+        return actions
 
 def step(board, move):
     new_board = chess.Bitboard(board.fen())
