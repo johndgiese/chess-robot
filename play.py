@@ -1,9 +1,8 @@
 from weight import piece_value_weight
-import ai
-from util import play_game, possible_actions
+from util import play_game, possible_actions, generate_move_function
 
 
 if __name__ == "__main__":
-    best_move = ai.generate(possible_actions, piece_value_weight)
+    best_move = generate_move_function(piece_value_weight, 2)
     play_game(best_move, best_move, display=True)
 

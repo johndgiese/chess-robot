@@ -1,13 +1,12 @@
 import sys
 
 from weight import piece_value_weight, random_weight
-import ai
 import util
 
 
 if __name__ == "__main__":
-    white = ai.generate(util.possible_actions, piece_value_weight)
-    black = ai.generate(util.possible_actions, random_weight)
+    white = util.generate_move_function(piece_value_weight, 2)
+    black = util.generate_move_function(piece_value_weight, 1)
 
 
 
@@ -18,7 +17,7 @@ if __name__ == "__main__":
     total_games = int(sys.argv[1])
     for x in range(total_games):
         print("\r{} Ties, {} White, {} Black".format(ties, white_wins, black_wins))
-        b = util.play_game(white, black, display=False)
+        b = util.play_game(white, black, display=True)
         if b.is_checkmate():
             if util.white_wins(b):
                 white_wins += 1

@@ -2,6 +2,7 @@ from itertools import cycle
 
 import chess
 from weight import piece_value_weight
+from ai import adversarial_search
 
 
 def num_kings(board):
@@ -13,10 +14,12 @@ class BoardException(Exception):
 
 
 def possible_actions(board):
-    for a in board.legal_moves:
-        new_board = chess.Bitboard(board.fen())
-        new_board.push(a)
-        yield a, new_board
+    return list(board.legal_moves)
+
+def step(board, move):
+    new_board = chess.Bitboard(board.fen())
+    new_board.push(move)
+    return new_board
 
 
 def play_game(white_move_func, black_move_func, display=False):
@@ -30,6 +33,7 @@ def play_game(white_move_func, black_move_func, display=False):
             m = white_move_func(b)
         else:
             m = black_move_func(b)
+        print(m)
         whites_turn = not whites_turn
 
         
@@ -63,3 +67,9 @@ def white_wins(board):
 
 def update_progress(progress):
     print('\r{0}%'.format(progress))
+
+
+def generate_move_function(weight_func, steps_ahead):
+    return adversarial_search(weight_func, possible_actions, step, steps_ahead)
+
+
