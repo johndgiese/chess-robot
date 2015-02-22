@@ -51,7 +51,8 @@ def play_game(white_move_func, black_move_func, display=False):
 
         if display:
             print('\n' + str(m))
-            print(str(b) + '\n\n')
+            print(str(b))
+            print('\n\n')
 
     if display:
         if b.is_stalemate():

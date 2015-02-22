@@ -32,8 +32,6 @@ def weight(board):
     aq = attack_queen_weight(board)/20
     ps = pawn_structure_weight(board)
 
-    print("pv {:0>+2.2f}, cc {:0>+2.2f} ic {:0>+2.2f} ak {:0>+2.2f} aq {:0>+2.2f} ps {:0>+2.2f}".format(pv, cc, ic, ak, aq, ps), end="\r")
-
     return pv + cc + ic + ak + aq + ps
 
 
@@ -113,16 +111,10 @@ def pawn_structure_weight(color, board):
 
     # doubled pawns are bad
     pawns_per_file = [len([s for s in pawn_squares if chess.file_index(s) == f]) for f in range(7)]
-    doubled_pawns = sum_list([ppf - 1 for ppf in pawns_per_file if pawns_per_file != 0])
+    doubled_pawns = sum_list([ppf - 1 for ppf in pawns_per_file if ppf != 0])
 
-    # pawns protecting each other is good
-    if color == chess.WHITE:
-        adacent_squares = lambda ps: on_board([ps - 9, ps - 7])
-    else:
-        adacent_squares = lambda ps: on_board([ps + 9, ps + 7])
-
-    protecting_pawns = sum_list([1 for s in pawn_squares for ps in pawn_squares if s in adacent_squares(ps)])
+    protecting_pawns = sum_list([1 for s in pawn_squares for ps in pawn_squares if s in pawn_protecting_squares(color, ps)])
 
     # divide out by number of pawns as this is less important the fewer pawns you have
-    return (doubled_pawns*4 + protecting_pawns*2)/num_pawns
+    return (-doubled_pawns*4 + protecting_pawns*2)/num_pawns
 
