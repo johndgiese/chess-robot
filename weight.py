@@ -16,21 +16,21 @@ def handle_checkmate(func):
     return decorated
 
 
-@lru_cache(maxsize=1000)
 @handle_checkmate
 def random_weight(board):
     """Return the weight of a board as a float."""
     return random.choice([1.0, 2.0, 3.0])  # TODO: implement
 
 
-@lru_cache(maxsize=1000)
+@lru_cache(maxsize=10000)
 @handle_checkmate
 def weight(board):
     pv = piece_value_weight(board)
     cc = control_center_weight(board)
     cw = check_weight(board)
-    aw = attack_king_weight(board)
-    return pv + cc/10 + cw + aw/8
+    akw = attack_king_weight(board)
+    aqw = attack_queen_weight(board)
+    return pv + cc/10 + cw + akw/8 + aqw/10
 
 
 
@@ -84,4 +84,17 @@ def attack_king_weight(color, board):
     opposite_color = chess.BLACK if color == chess.WHITE else chess.WHITE
     pressure_on_king = sum_list([attackers(opposite_color, board, s) for s in near_king])
     return -pressure_on_king
+
+
+@white_minus_black
+def attack_queen_weight(color, board):
+    try:
+        queen_square = [s for p, s in get_piece_squares(board) if p.piece_type == chess.QUEEN and p.color == color][0]
+    except IndexError:
+        return 0
+
+    near_queen = adjacent_squares(queen_square)
+    opposite_color = chess.BLACK if color == chess.WHITE else chess.WHITE
+    pressure_on_queen = sum_list([attackers(opposite_color, board, s) for s in near_queen])
+    return -pressure_on_queen
 
