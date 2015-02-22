@@ -128,3 +128,20 @@ def get_piece_squares(board):
 def get_pieces(board):
     return filter(lambda x: not x is None, [board.piece_at(s) for s in chess.SQUARES])
 
+
+def pawn_protecting_squares(color, protected_square):
+    if color == chess.WHITE:
+        if chess.file_index(protected_square) == 0:
+            return [protected_square - 7]
+        elif chess.file_index(protected_square) == 7:
+            return [protected_square - 9]
+        else:
+            return [protected_square - 9, protected_square - 7]
+    else:
+        if chess.file_index(protected_square) == 0:
+            return [protected_square + 9]
+        elif chess.file_index(protected_square) == 7:
+            return [protected_square + 7]
+        else:
+            return [protected_square + 9, protected_square + 7]
+
