@@ -1,7 +1,6 @@
 from itertools import cycle
 
 import chess
-from weight import piece_value_weight
 from ai import adversarial_search
 
 
@@ -14,7 +13,9 @@ class BoardException(Exception):
 
 
 def possible_actions(board):
-    return list(board.legal_moves)
+    actions = list(board.legal_moves)
+    print(len(actions))
+    return actions
 
 def step(board, move):
     new_board = chess.Bitboard(board.fen())
