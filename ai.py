@@ -113,7 +113,11 @@ def min_value(h, value, step, actions, alpha, beta, s):
 
     m = Move(None, inf)
     for a in actions(s):
-        m = min(m, Move(a, cofn(step(s, a)).value))
+        mt = Move(a, cofn(step(s, a)).value)) ## temporary move variable
+        if m == mt:
+            m = mt
+        else:
+            m = min(m, mt)
         if m.value <= alpha: return m
         beta = min(beta, m.value)
     return m
@@ -150,7 +154,11 @@ def max_value(h, value, step, actions, alpha, beta, s):
 
     m = Move(None, -inf)
     for a in actions(s):
-        m = max(m, Move(a, cofn(step(s, a)).value))
+        mt = Move(a, cofn(step(s, a)).value)) ## temporary move variable
+        if m == mt:
+            m = mt
+        else:
+            m = max(m, mt)
         if m.value >= beta: return m
         alpha = max(alpha, m.value)
     return m
