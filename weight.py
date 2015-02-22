@@ -98,3 +98,27 @@ def attack_queen_weight(color, board):
     pressure_on_queen = sum_list([attackers(opposite_color, board, s) for s in near_queen])
     return -pressure_on_queen
 
+
+@white_minus_black
+def pawn_structure_weight(color, board):
+    pawn_squares = [s for p, s in get_piece_squares(board) if p.piece_type == chess.PAWN and p.color == color]
+    num_pawns = len(pawn_squares)
+
+    if num_pawns == 0:
+        return 0
+
+    # doubled pawns are bad
+    pawns_per_file = [len([s for s in pawn_squares if chess.file_index(s) == f]) for f in range(7)]
+    doubled_pawns = sum_list([ppf - 1 for ppf in pawns_per_file if pawns_per_file != 0])
+
+    # pawns protecting each other is good
+    if color == chess.WHITE:
+        adacent_squares = lambda ps: on_board([ps - 9, ps - 7])
+    else:
+        adacent_squares = lambda ps: on_board([ps + 9, ps + 7])
+
+    protecting_pawns = sum_list([1 for s in pawn_squares for ps in pawn_squares if s in adacent_squares(ps)])
+
+    # divide out by number of pawns as this is less important the fewer pawns you have
+    return (doubled_pawns*4 + protecting_pawns*2)/num_pawns
+
