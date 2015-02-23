@@ -2,6 +2,7 @@ from functools import lru_cache, reduce
 import random
 import chess
 from util import *
+from db_cache import memoize_weight_with_db
 
 
 def handle_checkmate(func):
@@ -16,24 +17,32 @@ def handle_checkmate(func):
     return decorated
 
 
-@handle_checkmate
-def random_weight(board):
-    """Return the weight of a board as a float."""
-    return random.choice([1.0, 2.0, 3.0])  # TODO: implement
+def avoid_tie_when_winning(func):
+    def decorated(b):
+        score = func(b)
+        if is_tie(b):
+            if score > 0:
+                return -10000
+            else:
+                return 10000
+        else:
+            return score
+    return decorated
 
 
-@lru_cache(maxsize=10000)
+@memoize_weight_with_db
+@avoid_tie_when_winning
 @handle_checkmate
 def weight(board):
-    pv = piece_value_weight(board)
-    cc = control_center_weight(board)/10
+    pv = 2*piece_value_weight(board)
+    cc = control_center_weight(board)/5
     ic = check_weight(board)
     ak = attack_king_weight(board)/8
     aq = attack_queen_weight(board)/20
-    ps = pawn_structure_weight(board)
+    ps = pawn_structure_weight(board)/4
+    kp = protect_king(board)
 
-    return pv + cc + ic + ak + aq + ps
-
+    return pv + cc + ic + ak + aq + ps + kp
 
 
 PIECE_WEIGHTS = {
@@ -59,17 +68,20 @@ def piece_value_weight(color, board):
 def control_center_weight(color, board):
     if color == chess.WHITE:
         center_squares = [
-            chess.C4, chess.D4, chess.E4, chess.F4,
-            chess.C5, chess.D5, chess.E5, chess.F5,
-            chess.C6, chess.D6, chess.E6, chess.F6,
+            (chess.C3, 0.1), (chess.D3, 0.2), (chess.E3, 0.2), (chess.F3, 0.1),
+            (chess.C4, 0.3), (chess.D4, 0.4), (chess.E4, 0.4), (chess.F4, 0.3),
+            (chess.C5, 0.5), (chess.D5, 0.9), (chess.E5, 0.8), (chess.F5, 0.3),
+            (chess.C6, 0.5), (chess.D6, 0.7), (chess.E6, 0.6), (chess.F6, 0.4),
         ]
     else:
         center_squares = [
-            chess.C3, chess.D3, chess.E3, chess.F3,
-            chess.C4, chess.D4, chess.E4, chess.F4,
-            chess.C5, chess.D5, chess.E5, chess.F5,
+            (chess.C3, 0.5), (chess.D3, 0.7), (chess.E3, 0.6), (chess.F3, 0.4),
+            (chess.C4, 0.5), (chess.D4, 0.9), (chess.E4, 0.8), (chess.F4, 0.3),
+            (chess.C5, 0.3), (chess.D5, 0.4), (chess.E5, 0.4), (chess.F5, 0.3),
+            (chess.C6, 0.1), (chess.D6, 0.2), (chess.E6, 0.2), (chess.F6, 0.1),
         ]
-    return sum_list([attackers(color, board, s) for s in center_squares])
+
+    return sum_list([s[1]*attackers(color, board, s[0]) for s in center_squares])
 
 
 def check_weight(board):
@@ -117,4 +129,27 @@ def pawn_structure_weight(color, board):
 
     # divide out by number of pawns as this is less important the fewer pawns you have
     return (-doubled_pawns*4 + protecting_pawns*2)/num_pawns
+
+
+@white_minus_black
+def protect_king(color, board):
+    king_square = [s for p, s in get_piece_squares(board) if p.piece_type == chess.KING and p.color == color][0]
+    near_king = adjacent_squares(king_square)
+    
+    p_near_king = filter(lambda p: p.color == color, get_pieces(board, on=near_king))
+    other_near_king = len(list(p_near_king))
+    pawn_near_king = len(list(filter(lambda p: p.piece_type == chess.PAWN, p_near_king)))
+
+    king_in_middle = {
+        0: 0.0,
+        1: 0.1,
+        2: 0.2,
+        3: 0.5,
+        4: 0.6,
+        5: 0.3,
+        6: 0.2,
+        7: 0.0,
+    }[chess.file_index(king_square)]
+
+    return (pawn_near_king + other_near_king/3 - king_in_middle)/20
 

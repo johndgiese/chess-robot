@@ -24,6 +24,7 @@ __version__ = "0.7.0"
 
 import collections
 import re
+import hashlib
 
 from termcolor import colored
 
@@ -2510,8 +2511,8 @@ class Bitboard(object):
 
         return zobrist_hash
 
-    def __hash__(self):
-        return self.zobrist_hash()
+    def hashstr(self):
+        return "".join(self.fen().split(" ")[0:4])
 
 
 

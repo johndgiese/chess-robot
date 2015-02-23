@@ -4,6 +4,7 @@ import random
 
 import chess
 from ai import adversarial_search
+import weight as weight_mod
 
 
 def white_minus_black(func):
@@ -39,19 +40,17 @@ def play_game(white_move_func, black_move_func, display=False):
     if display:
         print(str(b) + '\n\n')
 
-    whites_turn = True
+    move_functions = cycle([white_move_func, black_move_func])
     while not b.is_game_over():
-        if whites_turn:
-            m = white_move_func(b)
-        else:
-            m = black_move_func(b)
-        whites_turn = not whites_turn
+        move_function = next(move_functions)
+        m = move_function(b)
         
         b.push(m)
 
         if display:
             print('\n' + str(m))
             print(str(b))
+            weight_mod.weight(b)
             print('\n\n')
 
     if display:
@@ -126,8 +125,9 @@ def get_piece_squares(board):
         if not p is None:
             yield p, s
 
-def get_pieces(board):
-    return filter(lambda x: not x is None, [board.piece_at(s) for s in chess.SQUARES])
+
+def get_pieces(board, on=chess.SQUARES):
+    return filter(lambda x: not x is None, [board.piece_at(s) for s in on])
 
 
 def pawn_protecting_squares(color, protected_square):
@@ -145,4 +145,8 @@ def pawn_protecting_squares(color, protected_square):
             return [protected_square + 7]
         else:
             return [protected_square + 9, protected_square + 7]
+
+
+def is_tie(board):
+    return board.is_game_over() and not board.is_checkmate()
 
